@@ -21,9 +21,12 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * newbee-mall全局异常处理
  */
+@Slf4j
 @RestControllerAdvice
 public class NewBeeMallExceptionHandler {
 
@@ -58,7 +61,7 @@ public class NewBeeMallExceptionHandler {
                 result.setResultCode(419);
             }
         } else {
-            e.printStackTrace();
+            log.error("未知异常", e);
             result.setMessage("未知异常，请查看控制台日志并检查配置文件。");
         }
         return result;

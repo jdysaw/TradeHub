@@ -1,6 +1,5 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import { ActionBar, ActionBarIcon, ActionBarButton, Divider, Popup, Overlay, Loading, Dialog, ContactCard, Form, AddressEdit, AddressList, Field, CellGroup, Cell, SwipeCell, Icon, Stepper, Card, Checkbox, CheckboxGroup, Button, Swipe, SwipeItem, PullRefresh, List, Tab, Tabs, SubmitBar, Toast, Skeleton } from 'vant'
 
 import App from './App.vue'
 import router from './router'
@@ -13,49 +12,12 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
-app.use(ActionBarButton)
-  .use(ActionBarIcon)
-  .use(ActionBar)
-  .use(Divider)
-  .use(Popup)
-  .use(Overlay)
-  .use(Loading)
-  .use(Dialog)
-  .use(Toast)
-  .use(ContactCard)
-  .use(Form)
-  .use(AddressEdit)
-  .use(AddressList)
-  .use(Field)
-  .use(CellGroup)
-  .use(Cell)
-  .use(SwipeCell)
-  .use(Icon)
-  .use(Stepper)
-  .use(Card)
-  .use(Button)
-  .use(Swipe)
-  .use(SwipeItem)
-  .use(PullRefresh)
-  .use(List)
-  .use(Tab)
-  .use(Tabs)
-  .use(SubmitBar)
-  .use(Checkbox)
-  .use(CheckboxGroup)
-  .use(Skeleton)
+
+import { prefix } from '@/common/js/utils'
 
 // 全局过滤器
 app.config.globalProperties.$filters = {
-  prefix(url) {
-    if (url && url.startsWith('http')) {
-      return url
-    } else {
-      // 使用本地后端服务地址
-      url = `http://localhost:28019${url}`
-      return url
-    }
-  }
+  prefix
 }
 
 app.mount('#app')

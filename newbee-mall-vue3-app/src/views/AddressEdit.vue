@@ -31,7 +31,7 @@ import { reactive, onMounted } from 'vue'
 import { showToast } from 'vant'
 import sHeader from '@/components/SimpleHeader.vue'
 import { addAddress, EditAddress, DeleteAddress, getAddressDetail } from '@/service/address'
-import { tdist } from '@/common/js/utils'
+import { tdist } from '@/common/js/tdist'
 import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
 const router = useRouter()
