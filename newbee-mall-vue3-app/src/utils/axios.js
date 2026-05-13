@@ -11,12 +11,13 @@ import { showToast, showFailToast } from 'vant'
 import { setLocal } from '@/common/js/utils'
 import router from '../router'
 
-console.log('import.meta.env', import.meta.env)
-
 axios.defaults.baseURL = import.meta.env.MODE == 'development' ? '/api/v1' : '/api/v1'
 axios.defaults.withCredentials = true
 axios.defaults.headers['X-Requested-With'] = 'XMLHttpRequest'
-axios.defaults.headers['token'] = localStorage.getItem('token') || ''
+axios.interceptors.request.use(config => {
+  config.headers['token'] = localStorage.getItem('token') || ''
+  return config
+})
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 
 axios.interceptors.response.use(res => {

@@ -26,12 +26,12 @@
       </div>
       <div class="product-intro">
         <ul>
-          <li class="active">概述</li>
-          <li>参数</li>
-          <li>安装服务</li>
-          <li>常见问题</li>
+          <li :class="{ active: state.activeTab === 0 }" @click="state.activeTab = 0">概述</li>
+          <li :class="{ active: state.activeTab === 1 }" @click="state.activeTab = 1">参数</li>
+          <li :class="{ active: state.activeTab === 2 }" @click="state.activeTab = 2">服务保障</li>
+          <li :class="{ active: state.activeTab === 3 }" @click="state.activeTab = 3">常见问题</li>
         </ul>
-        <!-- 核心内容注入点：优先渲染 renderContent -->
+        <!-- 核心内容注入点 -->
         <div class="product-content" v-html="renderContent"></div>
       </div>
     </div>
@@ -60,6 +60,7 @@ const router = useRouter()
 const cart = useCartStore()
 
 const state = reactive({
+  activeTab: 0,
   detail: {
     goodsCarouselList: []
   }
@@ -67,55 +68,104 @@ const state = reactive({
 
 // 计算属性：渲染最终内容（带自动回退逻辑）
 const renderContent = computed(() => {
-  const content = state.detail.goodsDetailContent || ''
-  // 检查是否需要加载演示模板（如果原生内容为空或仅为加载中占位）
-  if (!content || !content.includes('<img') || content.includes('加载中')) {
-    return defaultContent.value
+  const tab = state.activeTab
+  const name = state.detail.goodsName || ''
+  
+  if (tab === 0) {
+    const content = state.detail.goodsDetailContent || ''
+    // 如果原生内容为空或仅为加载中占位，加载高质量通用模版
+    if (!content || !content.includes('<img') || content.includes('加载中')) {
+      return defaultContent.value
+    }
+    return content
+  } else if (tab === 1) {
+    return `
+      <div class="hw-product-detail-template">
+        <h2 class="hw-section-title">详细参数矩阵</h2>
+        <div class="hw-params-table">
+          <div class="hw-p-row"><span>商品名称</span><span>${name}</span></div>
+          <div class="hw-p-row"><span>商品编号</span><span>${state.detail.goodsId || '暂无'}</span></div>
+          <div class="hw-p-row"><span>商品毛重</span><span>以实物为准</span></div>
+          <div class="hw-p-row"><span>商品产地</span><span>中国大陆</span></div>
+          <div class="hw-p-row"><span>包装清单</span><span>商品主体 × 1、说明书 × 1</span></div>
+        </div>
+      </div>
+    `
+  } else if (tab === 2) {
+    return `
+      <div class="hw-product-detail-template">
+        <h2 class="hw-section-title">服务与保障</h2>
+        <div class="hw-reasons-grid" style="grid-template-columns: 1fr;">
+          <div class="hw-reason-card" style="text-align: left; padding: 20px 30px;">
+            <h3 style="color:#1baeae; font-size:18px;">✅ 正品行货</h3>
+            <p style="font-size:14px; margin-top:10px;">商城向您保证所售商品均为正品行货，开具机打发票或电子发票。</p>
+          </div>
+          <div class="hw-reason-card" style="text-align: left; padding: 20px 30px;">
+            <h3 style="color:#1baeae; font-size:18px;">🚚 全国联保</h3>
+            <p style="font-size:14px; margin-top:10px;">凭质保证书及商城发票，可享受全国联保服务，与您亲临商场选购的商品享受相同的质量保证。</p>
+          </div>
+          <div class="hw-reason-card" style="text-align: left; padding: 20px 30px;">
+            <h3 style="color:#1baeae; font-size:18px;">🔄 无忧退换</h3>
+            <p style="font-size:14px; margin-top:10px;">客户购买商城商品7日内（含7日，自客户收到商品之日起计算），在保证商品完好的前提下，可无理由退货。</p>
+          </div>
+        </div>
+      </div>
+    `
+  } else if (tab === 3) {
+    return `
+      <div class="hw-product-detail-template">
+        <h2 class="hw-section-title">常见问题 FAQ</h2>
+        <div class="hw-params-table">
+          <div class="hw-p-row" style="flex-direction: column; gap: 10px;">
+            <span style="color:#333; font-weight:bold;">Q：下单后什么时候发货？</span>
+            <span style="color:#666; font-weight:normal;">A：一般情况下，我们会在您付款后的 24 小时内为您发货（大型活动期间除外）。</span>
+          </div>
+          <div class="hw-p-row" style="flex-direction: column; gap: 10px;">
+            <span style="color:#333; font-weight:bold;">Q：支持哪些快递？</span>
+            <span style="color:#666; font-weight:normal;">A：商城默认使用顺丰速运或京东物流，偏远地区将根据实际情况安排邮政 EMS 等合适的快递。</span>
+          </div>
+          <div class="hw-p-row" style="flex-direction: column; gap: 10px;">
+            <span style="color:#333; font-weight:bold;">Q：如何申请退换货？</span>
+            <span style="color:#666; font-weight:normal;">A：请在“我的订单”中找到对应订单，点击“申请售后”，填写相关信息即可。</span>
+          </div>
+        </div>
+      </div>
+    `
   }
-  return content
 })
 
-// 计算属性：华为高级视觉模版（纯内嵌注入）
+// 计算属性：通用高级视觉模版（适用于所有商品）
 const defaultContent = computed(() => {
   const name = state.detail.goodsName || ''
   return `
     <div class="hw-product-detail-template">
-      <!-- 6大核心理由网格 -->
+      <!-- 核心理由网格 -->
       <h2 class="hw-section-title">选择 ${name} 的 6 大理由</h2>
       <div class="hw-reasons-grid">
-        <div class="hw-reason-card"><span class="icon">🖥️</span><h3>超感光视野</h3><p>色彩精准，原彩显示技术，呈现自然本色。</p></div>
-        <div class="hw-reason-card"><span class="icon">🚀</span><h3>性能爆发</h3><p>强劲核心架构，多任务处理迅捷如雷。</p></div>
-        <div class="hw-reason-card"><span class="icon">🔋</span><h3>长效续航</h3><p>先进电池管理系统，为您提供全天候动力。</p></div>
-        <div class="hw-reason-card"><span class="icon">🛡️</span><h3>坚韧可靠</h3><p>通过多重严苛测试，保证每一处细节经久耐用。</p></div>
-        <div class="hw-reason-card"><span class="icon">⚖️</span><h3>极致轻薄</h3><p>航空级材质打造，极简主义，触手轻盈。</p></div>
-        <div class="hw-reason-card"><span class="icon">🎵</span><h3>沉浸音效</h3><p>双扬声器立体声场，带来影院级视听盛宴。</p></div>
+        <div class="hw-reason-card"><span class="icon">✨</span><h3>匠心工艺</h3><p>精雕细琢，每一个细节都经得起时间的推敲。</p></div>
+        <div class="hw-reason-card"><span class="icon">🏆</span><h3>严选材质</h3><p>从源头把控品质，只为您提供最安心的选择。</p></div>
+        <div class="hw-reason-card"><span class="icon">🎨</span><h3>出众颜值</h3><p>经典与现代的完美碰撞，彰显您的独特品味。</p></div>
+        <div class="hw-reason-card"><span class="icon">🛡️</span><h3>坚韧耐用</h3><p>经过多重严苛测试，保证每一处细节经久耐用。</p></div>
+        <div class="hw-reason-card"><span class="icon">❤️</span><h3>贴心设计</h3><p>以人为本的交互逻辑，带来前所未有的舒适体验。</p></div>
+        <div class="hw-reason-card"><span class="icon">🌟</span><h3>口碑爆棚</h3><p>深受万千用户喜爱，好评如潮的明星爆款。</p></div>
       </div>
 
-      <!-- 沉浸式黑色技术亮点 -->
+      <!-- 沉浸式黑色亮点 -->
       <div class="hw-tech-black-block">
-        <h2>全方位技术革新</h2>
-        <p>通过深度的软硬件协同优化，${name} 将科技与美学完美融合。无论是极致的输入反馈还是澎湃的算力，都为您每一次操作注入灵感。</p>
-      </div>
-
-      <!-- 核心参数区域 -->
-      <h2 class="hw-section-title">详细参数矩阵</h2>
-      <div class="hw-params-table">
-        <div class="hw-p-row"><span>显示系统</span><span>旗舰级全向视野</span></div>
-        <div class="hw-p-row"><span>影像参数</span><span>超感光多摄阵列</span></div>
-        <div class="hw-p-row"><span>充电方案</span><span>超级快充 + 智能守护</span></div>
-        <div class="hw-p-row"><span>机身重量</span><span>约 1.4kg (以实测为准)</span></div>
+        <h2>重新定义卓越品质</h2>
+        <p>${name} 致力于将极致体验融入生活的方方面面。我们不仅关注产品的功能，更在意它能为您带来的情感价值。</p>
       </div>
 
       <!-- 美学文案区 -->
       <div class="hw-aesthetic-area">
-        <h2>轻盈于形 · 强劲于心</h2>
-        <p class="hw-note">*实际续航依具体使用情况及环境而定。无线充电套装需另行购买。</p>
+        <h2>卓越于形 · 匠心于心</h2>
+        <p class="hw-note">*图片仅供参考，实际产品由于光线、显示器等原因可能存在些许色差，请以实物为准。</p>
       </div>
 
       <!-- 底部服务保障横条 -->
       <div class="hw-service-footer">
         <div class="hw-s-item"><span>🛡️</span>正品保障</div>
-        <div class="hw-s-item"><span>🚀</span>顺丰包邮</div>
+        <div class="hw-s-item"><span>🚀</span>急速发货</div>
         <div class="hw-s-item"><span>📅</span>售后无忧</div>
       </div>
     </div>
@@ -156,9 +206,10 @@ const goToCart = async () => {
   @import '../common/style/mixin';
   .product-detail {
     .detail-content {
-      height: calc(100vh - 50px);
+      height: calc(100vh - 100px);
       overflow: hidden;
       overflow-y: auto;
+      padding-bottom: 50px;
       .detail-swipe-wrap {
         .my-swipe .van-swipe-item {
           img {
@@ -280,6 +331,20 @@ const goToCart = async () => {
               border-top: 1px solid #eee;
               .hw-s-item { font-size: 13px; color: #444; font-weight: 500; span { margin-right: 5px; font-size: 18px; } }
             }
+          }
+          
+          /* 防爆裂：通用富文本样式限制 */
+          img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+          }
+          p {
+            line-height: 1.6;
+            margin: 10px 0;
+            color: #333;
+            padding: 0 10px;
           }
         }
       }

@@ -23,55 +23,17 @@
       </router-link>
     </header>
     <nav-bar />
-    <div class="good">
-      <header class="good-header">新品上线</header>
-      <van-skeleton title :row="3" :loading="state.loading">
-        <div class="good-box">
-          <div class="good-item" v-for="item in state.newGoodses" :key="item.goodsId" @click="goToDetail(item)">
-            <img :src="$filters.prefix(item.goodsCoverImg)" alt="">
-            <div class="good-desc">
-              <div class="title">{{ item.goodsName }}</div>
-              <div class="price">¥ {{ item.sellingPrice }}</div>
-            </div>
-          </div>
-        </div>
-      </van-skeleton>
-    </div>
-    <div class="good">
-      <header class="good-header">热门商品</header>
-      <van-skeleton title :row="3" :loading="state.loading">
-        <div class="good-box">
-          <div class="good-item" v-for="item in state.hots" :key="item.goodsId" @click="goToDetail(item)">
-            <img :src="$filters.prefix(item.goodsCoverImg)" alt="">
-            <div class="good-desc">
-              <div class="title">{{ item.goodsName }}</div>
-              <div class="price">¥ {{ item.sellingPrice }}</div>
-            </div>
-          </div>
-        </div>
-      </van-skeleton>
-    </div>
-    <div class="good" :style="{ paddingBottom: '100px' }">
-      <header class="good-header">最新推荐</header>
-      <van-skeleton title :row="3" :loading="state.loading">
-        <div class="good-box">
-          <div class="good-item" v-for="item in state.recommends" :key="item.goodsId" @click="goToDetail(item)">
-            <img :src="$filters.prefix(item.goodsCoverImg)" alt="">
-            <div class="good-desc">
-              <div class="title">{{ item.goodsName }}</div>
-              <div class="price">¥ {{ item.sellingPrice }}</div>
-            </div>
-          </div>
-        </div>
-      </van-skeleton>
-    </div>
+    <good-list title="新品上线" :list="state.newGoodses" :loading="state.loading" />
+    <good-list title="热门商品" :list="state.hots" :loading="state.loading" />
+    <good-list title="最新推荐" :list="state.recommends" :loading="state.loading" :custom-style="{ paddingBottom: '100px' }" />
   </div>
 </template>
 
 <script setup>
-import { reactive, onMounted, nextTick } from 'vue'
+import { reactive, onMounted, nextTick, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import navBar from '@/components/NavBar.vue'
+import goodList from '@/components/GoodList.vue'
 import { getHome } from '@/service/home'
 import { getLocal } from '@/common/js/utils'
 import { showLoadingToast, closeToast, showToast } from 'vant'
@@ -105,20 +67,22 @@ onMounted(async () => {
   closeToast()
 })
 
+const handleScroll = () => {
+  let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+  scrollTop > 100 ? state.headerScroll = true : state.headerScroll = false
+}
+
 nextTick(() => {
-  document.body.addEventListener('scroll', () => {
-    let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-    scrollTop > 100 ? state.headerScroll = true : state.headerScroll = false
-  })
+  window.addEventListener('scroll', handleScroll)
 })
 
-const goToDetail = (item) => {
-  router.push({ path: `/product/${item.goodsId}` })
-}
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
 
-const tips = () => {
-  showToast('敬请期待');
-}
+
+
+
 </script>
 
 <style lang="less" scoped>

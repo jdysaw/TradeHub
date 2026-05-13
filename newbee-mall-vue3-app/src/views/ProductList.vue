@@ -41,7 +41,7 @@
               </div>
             </div>
           </template>
-          <img class="empty" v-else src="https://s.yezgea02.com/1604041313083/kesrtd.png" alt="搜索">
+          <img class="empty" v-else src="@/assets/kesrtd.png" alt="搜索">
         </van-list>
       </van-pull-refresh>
     </div>
@@ -114,7 +114,7 @@ const onRefresh = () => {
 }
 
 const changeTab = ({ name }) => {
-  console.log('name', name)
+
   state.orderBy = name
   onRefresh()
 }

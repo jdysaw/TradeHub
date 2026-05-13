@@ -11,7 +11,7 @@
 <template>
   <div class="login">
     <s-header :name="type == 'login' ? '登录' : '注册'" :back="'/home'"></s-header>
-    <img class="logo" src="https://s.yezgea02.com/1604045825972/newbee-mall-vue3-app-logo.png" alt="">
+    <img class="logo" src="@/assets/newbee-mall-vue3-app-logo.png" alt="">
     <div v-if="state.type == 'login'" class="login-body login">
       <van-form @submit="onSubmit">
         <van-field v-model="state.username" name="username" label="手机号" placeholder="请输入手机号"
@@ -51,12 +51,15 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import sHeader from '@/components/SimpleHeader.vue'
 import vueImgVerify from '@/components/VueImageVerify.vue'
 import { login, register } from '@/service/user'
 import { setLocal } from '@/common/js/utils'
 import md5 from 'js-md5'
 import { showSuccessToast, showFailToast } from 'vant'
+
+const router = useRouter()
 const verifyRef = ref(null)
 const state = reactive({
   username: '',
@@ -88,7 +91,7 @@ const onSubmit = async (values) => {
     })
     setLocal('token', data)
     // 需要刷新页面，否则 axios.js 文件里的 token 不会被重置
-    window.location.href = '/'
+    router.push({ path: '/' })
   } else {
     await register({
       "loginName": values.username1,
