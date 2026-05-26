@@ -1,6 +1,6 @@
 export default {
   development: {
-    baseUrl: '/manage-api/v1'
+    baseUrl: '/api/v1'
   },
   beta: {
     baseUrl: '/manage-api/v1'
