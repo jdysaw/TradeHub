@@ -30,6 +30,11 @@ export default defineConfig({
         target: 'http://localhost:28019/manage-api',
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, '')
+      },
+      '/manage-api': {
+        target: 'http://localhost:28019/manage-api',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/manage-api/, '')
       }
     }
   },

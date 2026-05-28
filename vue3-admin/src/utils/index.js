@@ -22,9 +22,8 @@ export function hasEmoji (str = '') {
 }
 
 // 单张图片上传
-export const uploadImgServer = '/api/v1/upload/file'
-// 多张图片上传
-export const uploadImgsServer = '/api/v1/upload/files'
+export const uploadImgServer = '/manage-api/v1/upload/file'
+export const uploadImgsServer = '/manage-api/v1/upload/files'
 
 export const pathMap = {
   login: '登录',

@@ -51,7 +51,7 @@ const submitForm = async () => {
         passwordMd5: md5(state.ruleForm.password)
       }).then(res => {
         localSet('token', res)
-        window.location.href = '/'
+        window.location.href = '/admin/'
       }).catch(err => {
         console.error('登录请求异常：', err)
       })

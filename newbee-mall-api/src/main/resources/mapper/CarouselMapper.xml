@@ -176,4 +176,15 @@ Copyright (c) 2019-2021 十三 all rights reserved.
             #{id}
         </foreach>
     </update>
+
+    <select id="selectByIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_newbee_mall_carousel
+        where carousel_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and is_deleted = 0
+    </select>
 </mapper>

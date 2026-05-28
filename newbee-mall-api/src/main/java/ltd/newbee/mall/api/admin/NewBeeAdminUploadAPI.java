@@ -2,6 +2,7 @@ package ltd.newbee.mall.api.admin;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import ltd.newbee.mall.api.admin.param.BatchIdParam;
 import ltd.newbee.mall.config.annotation.TokenToAdminUser;
 import ltd.newbee.mall.dao.MallFileMapper;
 import ltd.newbee.mall.entity.AdminUserToken;
@@ -133,7 +134,40 @@ public class NewBeeAdminUploadAPI {
         resultSuccess.setData(fileNames);
         return resultSuccess;
     }
-    
+
+    /**
+     * 删除图片 - 根据文件ID删除
+     */
+    @RequestMapping(value = "/delete/file/{fileId}", method = RequestMethod.DELETE)
+    @ApiOperation(value = "删除图片", notes = "根据文件ID删除图片")
+    public Result deleteFile(@PathVariable("fileId") Long fileId, @TokenToAdminUser AdminUserToken adminUser) {
+        logger.info("adminUser:{}", adminUser.toString());
+        int deleteResult = mallFileMapper.deleteById(fileId);
+        if (deleteResult > 0) {
+            return ResultGenerator.genSuccessResult();
+        } else {
+            return ResultGenerator.genFailResult("删除失败");
+        }
+    }
+
+    /**
+     * 批量删除图片
+     */
+    @RequestMapping(value = "/delete/files", method = RequestMethod.DELETE)
+    @ApiOperation(value = "批量删除图片", notes = "批量删除图片")
+    public Result deleteFiles(@RequestBody BatchIdParam batchIdParam, @TokenToAdminUser AdminUserToken adminUser) {
+        logger.info("adminUser:{}", adminUser.toString());
+        if (batchIdParam == null || batchIdParam.getIds().length < 1) {
+            return ResultGenerator.genFailResult("参数异常");
+        }
+        int deleteResult = mallFileMapper.deleteBatch(batchIdParam.getIds());
+        if (deleteResult > 0) {
+            return ResultGenerator.genSuccessResult();
+        } else {
+            return ResultGenerator.genFailResult("删除失败");
+        }
+    }
+
     /**
      * 获取数据库中的图片 - 根据文件ID返回Base64图片
      */

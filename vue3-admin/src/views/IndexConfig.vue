@@ -166,7 +166,9 @@ const handleDelete = () => {
     return
   }
   axios.delete('/indexConfigs', {
-    ids: state.multipleSelection.map(i => i.configId)
+    data: {
+      ids: state.multipleSelection.map(i => i.configId)
+    }
   }).then(() => {
     ElMessage.success('删除成功')
     getIndexConfig()
@@ -175,7 +177,9 @@ const handleDelete = () => {
 // 单个删除
 const handleDeleteOne = (id) => {
   axios.delete('/indexConfigs', {
-    ids: [id]
+    data: {
+      ids: [id]
+    }
   }).then(() => {
     ElMessage.success('删除成功')
     getIndexConfig()

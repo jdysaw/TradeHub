@@ -21,4 +21,18 @@ public interface MallFileMapper {
      * @return 文件实体
      */
     MallFile selectById(@Param("fileId") Long fileId);
+
+    /**
+     * 根据文件ID删除文件
+     * @param fileId 文件ID
+     * @return 影响行数
+     */
+    int deleteById(@Param("fileId") Long fileId);
+
+    /**
+     * 批量删除文件
+     * @param fileIds 文件ID数组
+     * @return 影响行数
+     */
+    int deleteBatch(@Param("fileIds") Long[] fileIds);
 }
