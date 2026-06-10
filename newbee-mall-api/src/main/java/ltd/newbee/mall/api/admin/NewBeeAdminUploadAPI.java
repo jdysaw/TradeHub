@@ -18,6 +18,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URI;
@@ -67,7 +72,7 @@ public class NewBeeAdminUploadAPI {
             
             // 返回数据库中的文件ID，前端通过这个ID获取图片
             Result resultSuccess = ResultGenerator.genSuccessResult();
-            resultSuccess.setData("/db-file/" + mallFile.getFileId());
+            resultSuccess.setData("/manage-api/v1/db-file/" + mallFile.getFileId());
             return resultSuccess;
         } catch (IOException e) {
             e.printStackTrace();
@@ -124,7 +129,7 @@ public class NewBeeAdminUploadAPI {
                 }
                 
                 // 添加到返回结果
-                fileNames.add("/db-file/" + mallFile.getFileId());
+                fileNames.add("/manage-api/v1/db-file/" + mallFile.getFileId());
             } catch (IOException e) {
                 e.printStackTrace();
                 return ResultGenerator.genFailResult("文件上传失败");
@@ -169,24 +174,43 @@ public class NewBeeAdminUploadAPI {
     }
 
     /**
-     * 获取数据库中的图片 - 根据文件ID返回Base64图片
+     * 获取数据库中的图片 - 根据文件ID返回图片二进制流
      */
     @RequestMapping(value = "/db-file/{fileId}", method = RequestMethod.GET)
-    @ApiOperation(value = "获取数据库图片", notes = "根据文件ID获取Base64图片")
-    public Result getFileById(@PathVariable("fileId") Long fileId) {
+    @ApiOperation(value = "获取数据库图片", notes = "根据文件ID获取图片")
+    public ResponseEntity<byte[]> getFileById(@PathVariable("fileId") Long fileId) {
         try {
             MallFile mallFile = mallFileMapper.selectById(fileId);
             if (mallFile == null) {
-                return ResultGenerator.genFailResult("文件不存在");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
-            // 返回完整的 Base64 Data URL
-            String base64Url = "data:image" + mallFile.getFileSuffix() + ";base64," + mallFile.getFileContent();
-            Result resultSuccess = ResultGenerator.genSuccessResult();
-            resultSuccess.setData(base64Url);
-            return resultSuccess;
+            // 将Base64解码为字节数组
+            byte[] imageBytes = Base64.getDecoder().decode(mallFile.getFileContent());
+            // 根据文件后缀确定Content-Type
+            String suffix = mallFile.getFileSuffix().replace(".", "").toLowerCase();
+            String contentType;
+            switch (suffix) {
+                case "jpg":
+                case "jpeg":
+                    contentType = MediaType.IMAGE_JPEG_VALUE;
+                    break;
+                case "png":
+                    contentType = MediaType.IMAGE_PNG_VALUE;
+                    break;
+                case "gif":
+                    contentType = MediaType.IMAGE_GIF_VALUE;
+                    break;
+                default:
+                    contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+            }
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType(contentType));
+            headers.setContentLength(imageBytes.length);
+            headers.setCacheControl("max-age=3600, public");
+            return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResultGenerator.genFailResult("获取文件失败");
+            logger.error("获取文件失败", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 

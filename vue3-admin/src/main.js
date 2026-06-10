@@ -55,10 +55,14 @@ app.config.globalProperties.$filters = {
   prefix(url) {
     if (url && url.startsWith('http')) {
       return url
-    } else {
-      url = `http://118.31.42.128${url}`
+    }
+    if (!url) return url
+    // 开发环境由 Vite 代理转发，直接返回相对路径
+    if (import.meta.env.DEV) {
       return url
     }
+    // 生产环境返回空前缀，由 Nginx 代理 /manage-api 到后端
+    return url
   }
 }
 

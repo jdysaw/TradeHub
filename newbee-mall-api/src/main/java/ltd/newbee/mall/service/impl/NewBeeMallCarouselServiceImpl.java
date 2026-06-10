@@ -79,12 +79,19 @@ public class NewBeeMallCarouselServiceImpl implements NewBeeMallCarouselService 
         List<Carousel> carousels = carouselMapper.selectByIds(ids);
         List<Long> fileIds = new ArrayList<>();
         for (Carousel carousel : carousels) {
-            if (carousel.getCarouselUrl() != null && carousel.getCarouselUrl().startsWith("/db-file/")) {
-                String fileIdStr = carousel.getCarouselUrl().substring(9); // 移除 "/db-file/" 前缀
-                try {
-                    fileIds.add(Long.parseLong(fileIdStr));
-                } catch (NumberFormatException e) {
-                    logger.warn("Invalid file ID format in carousel URL: {}", carousel.getCarouselUrl());
+            if (carousel.getCarouselUrl() != null) {
+                String fileIdStr = null;
+                if (carousel.getCarouselUrl().startsWith("/manage-api/v1/db-file/")) {
+                    fileIdStr = carousel.getCarouselUrl().substring("/manage-api/v1/db-file/".length());
+                } else if (carousel.getCarouselUrl().startsWith("/db-file/")) {
+                    fileIdStr = carousel.getCarouselUrl().substring("/db-file/".length());
+                }
+                if (fileIdStr != null) {
+                    try {
+                        fileIds.add(Long.parseLong(fileIdStr));
+                    } catch (NumberFormatException e) {
+                        logger.warn("Invalid file ID format in carousel URL: {}", carousel.getCarouselUrl());
+                    }
                 }
             }
         }

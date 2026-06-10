@@ -218,7 +218,7 @@ const handleBeforeUpload = (file) => {
   }
 }
 const handleUrlSuccess = (val) => {
-  state.goodForm.goodsCoverImg = val.data || ''
+  state.goodForm.goodsCoverImg = proxy.$filters.prefix(val.data) || ''
 }
 const handleChangeCate = (val) => {
   state.categoryId = val[2] || 0
