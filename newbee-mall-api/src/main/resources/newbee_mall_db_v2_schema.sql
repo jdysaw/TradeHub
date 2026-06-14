@@ -17,7 +17,7 @@ CREATE TABLE `tb_newbee_mall_admin_user` (
   `nick_name` varchar(50) NOT NULL COMMENT '管理员显示昵称',
   `locked` tinyint(4) DEFAULT '0' COMMENT '是否锁定 0未锁定 1已锁定无法登陆',
   PRIMARY KEY (`admin_user_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 LOCK TABLES `tb_newbee_mall_admin_user` WRITE;
 /*!40000 ALTER TABLE `tb_newbee_mall_admin_user` DISABLE KEYS */;
@@ -48,7 +48,7 @@ CREATE TABLE `tb_newbee_mall_carousel` (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   `update_user` int(11) NOT NULL DEFAULT '0' COMMENT '修改者id',
   PRIMARY KEY (`carousel_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 LOCK TABLES `tb_newbee_mall_carousel` WRITE;
 /*!40000 ALTER TABLE `tb_newbee_mall_carousel` DISABLE KEYS */;
@@ -83,7 +83,7 @@ CREATE TABLE `tb_newbee_mall_goods_category` (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   `update_user` int(11) DEFAULT '0' COMMENT '修改者id',
   PRIMARY KEY (`category_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 LOCK TABLES `tb_newbee_mall_goods_category` WRITE;
 /*!40000 ALTER TABLE `tb_newbee_mall_goods_category` DISABLE KEYS */;
@@ -220,7 +220,7 @@ CREATE TABLE `tb_newbee_mall_goods_info` (
   `update_user` int(11) NOT NULL DEFAULT '0' COMMENT '修改者主键id',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '商品修改时间',
   PRIMARY KEY (`goods_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 LOCK TABLES `tb_newbee_mall_goods_info` WRITE;
 /*!40000 ALTER TABLE `tb_newbee_mall_goods_info` DISABLE KEYS */;
@@ -825,7 +825,7 @@ CREATE TABLE `tb_newbee_mall_index_config` (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最新修改时间',
   `update_user` int(11) DEFAULT '0' COMMENT '修改者id',
   PRIMARY KEY (`config_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 LOCK TABLES `tb_newbee_mall_index_config` WRITE;
 /*!40000 ALTER TABLE `tb_newbee_mall_index_config` DISABLE KEYS */;
@@ -884,7 +884,7 @@ CREATE TABLE `tb_newbee_mall_order` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最新修改时间',
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 # Dump of table tb_newbee_mall_order_address
 # ------------------------------------------------------------
@@ -900,7 +900,7 @@ CREATE TABLE `tb_newbee_mall_order_address` (
   `region_name` varchar(32) NOT NULL DEFAULT '' COMMENT '区',
   `detail_address` varchar(64) NOT NULL DEFAULT '' COMMENT '收件详细地址(街道/楼宇/单元)',
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单收货地址关联表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单收货地址关联表';
 
 # Dump of table tb_newbee_mall_order_item
 # ------------------------------------------------------------
@@ -917,7 +917,7 @@ CREATE TABLE `tb_newbee_mall_order_item` (
   `goods_count` int(11) NOT NULL DEFAULT '1' COMMENT '数量(订单快照)',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`order_item_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 # Dump of table tb_newbee_mall_shopping_cart_item
 # ------------------------------------------------------------
@@ -933,7 +933,7 @@ CREATE TABLE `tb_newbee_mall_shopping_cart_item` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最新修改时间',
   PRIMARY KEY (`cart_item_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 # Dump of table tb_newbee_mall_user
 # ------------------------------------------------------------
@@ -950,7 +950,7 @@ CREATE TABLE `tb_newbee_mall_user` (
   `locked_flag` tinyint(4) NOT NULL DEFAULT '0' COMMENT '锁定标识字段(0-未锁定 1-已锁定)',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
   PRIMARY KEY (`user_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 LOCK TABLES `tb_newbee_mall_user` WRITE;
 /*!40000 ALTER TABLE `tb_newbee_mall_user` DISABLE KEYS */;
@@ -983,7 +983,7 @@ CREATE TABLE `tb_newbee_mall_user_address` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`address_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='收货地址表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='收货地址表';
 
 # Dump of table tb_newbee_mall_user_token
 # ------------------------------------------------------------
@@ -997,7 +997,7 @@ CREATE TABLE `tb_newbee_mall_user_token` (
   `expire_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'token过期时间',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `uq_token` (`token`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 # Dump of table tb_newbee_mall_user_token
 # ------------------------------------------------------------
@@ -1011,6 +1011,6 @@ CREATE TABLE `tb_newbee_mall_admin_user_token` (
   `expire_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'token过期时间',
   PRIMARY KEY (`admin_user_id`),
   UNIQUE KEY `uq_token` (`token`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- SQL导入完成

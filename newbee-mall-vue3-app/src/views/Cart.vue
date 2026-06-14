@@ -1,7 +1,10 @@
 <template>
   <div class="cart-box">
     <s-header :name="'购物车'" :noback="true"></s-header>
-    <div class="cart-body">
+    <div class="cart-body" v-if="state.loading">
+      <van-skeleton v-for="i in 3" :key="i" title :row="3" animate />
+    </div>
+    <div class="cart-body" v-else>
       <van-checkbox-group @change="groupChange" v-model="state.result" ref="checkboxGroup">
         <van-swipe-cell :right-width="50" v-for="(item, index) in state.list" :key="index">
           <div class="good-item">
@@ -39,7 +42,7 @@
       </van-checkbox-group>
     </div>
     <van-submit-bar
-      v-if="state.list.length > 0"
+      v-if="!state.loading && state.list.length > 0"
       class="submit-all van-hairline--top"
       :price="total * 100"
       button-text="结算"
@@ -48,7 +51,7 @@
     >
       <van-checkbox @click="allCheck" v-model:checked="state.checkAll">全选</van-checkbox>
     </van-submit-bar>
-    <div class="empty" v-if="!state.list.length">
+    <div class="empty" v-if="!state.loading && !state.list.length">
       <img class="empty-cart" src="@/assets/empty-car.png" alt="空购物车">
       <div class="title">购物车空空如也</div>
       <van-button round color="#1baeae" type="primary" @click="goTo" block>前往选购</van-button>
@@ -61,7 +64,7 @@
 import { reactive, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
-import { showToast, showLoadingToast, closeToast, showFailToast } from 'vant'
+import { showLoadingToast, closeToast, showFailToast } from 'vant'
 import navBar from '@/components/NavBar.vue'
 import sHeader from '@/components/SimpleHeader.vue'
 import { getCart, deleteCartItem, modifyCart } from '@/service/cart'
@@ -73,7 +76,8 @@ const state = reactive({
   list: [],
   all: false,
   result: [],
-  checkAll: true
+  checkAll: true,
+  loading: false
 })
 
 onMounted(() => {
@@ -81,11 +85,11 @@ onMounted(() => {
 })
 
 const init = async () => {
-  showLoadingToast({ message: '加载中...', forbidClick: true });
+  state.loading = true
   const { data } = await getCart({ pageNumber: 1 })
   state.list = data
   state.result = data.map(item => item.cartItemId)
-  closeToast()
+  state.loading = false
 }
 
 const total = computed(() => {

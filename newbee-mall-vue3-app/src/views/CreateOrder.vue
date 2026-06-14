@@ -1,7 +1,10 @@
 <template>
   <div class="create-order">
     <s-header :name="'生成订单'" @callback="deleteLocal"></s-header>
-    <div class="address-wrap">
+    <div class="address-wrap" v-if="state.loading">
+      <van-skeleton title :row="2" animate />
+    </div>
+    <div class="address-wrap" v-else>
       <div class="name" @click="goTo">
         <span>{{ state.address.userName }} </span>
         <span>{{ state.address.userPhone }}</span>
@@ -11,7 +14,10 @@
       </div>
       <van-icon class="arrow" name="arrow" />
     </div>
-    <div class="good">
+    <div class="good" v-if="state.loading">
+      <van-skeleton v-for="i in 2" :key="i" title :row="2" animate style="margin-top: 20px;" />
+    </div>
+    <div class="good" v-else>
       <div class="good-item" v-for="(item, index) in state.cartList" :key="index">
         <div class="good-img"><img :src="$filters.prefix(item.goodsCoverImg)" alt=""></div>
         <div class="good-desc">
@@ -25,7 +31,7 @@
         </div>
       </div>
     </div>
-    <div class="pay-wrap">
+    <div class="pay-wrap" v-if="!state.loading">
       <div class="price">
         <span>商品金额</span>
         <span>¥{{ total }}</span>
@@ -55,7 +61,7 @@ import { getByCartItemIds } from '@/service/cart'
 import { getDefaultAddress, getAddressDetail } from '@/service/address'
 import { createOrder, payOrder } from '@/service/order'
 import { setLocal, getLocal } from '@/common/js/utils'
-import { showLoadingToast, closeToast, showSuccessToast } from 'vant'
+import { showSuccessToast } from 'vant'
 import { useRoute, useRouter } from 'vue-router'
 const router = useRouter()
 const route = useRoute()
@@ -64,7 +70,8 @@ const state = reactive({
   address: {},
   showPay: false,
   orderNo: '',
-  cartItemIds: []
+  cartItemIds: [],
+  loading: false
 })
 
 onMounted(() => {
@@ -72,7 +79,7 @@ onMounted(() => {
 })
 
 const init = async () => {
-  showLoadingToast({ message: '加载中...', forbidClick: true });
+  state.loading = true
   const { addressId, cartItemIds } = route.query
   const _cartItemIds = cartItemIds ? JSON.parse(cartItemIds) : JSON.parse(getLocal('cartItemIds'))
   setLocal('cartItemIds', JSON.stringify(_cartItemIds))
@@ -84,7 +91,7 @@ const init = async () => {
   }
   state.cartList = list
   state.address = address
-  closeToast()
+  state.loading = false
 }
 
 const goTo = () => {

@@ -261,7 +261,7 @@
             <if test="goodsIntro != null">
                 #{goodsIntro,jdbcType=VARCHAR},
             </if>
-            <if test="goodsIntro != null">
+            <if test="goodsCategoryId != null">
                 #{goodsCategoryId,jdbcType=BIGINT},
             </if>
             <if test="goodsCoverImg != null">

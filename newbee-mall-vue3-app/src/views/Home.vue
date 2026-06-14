@@ -26,7 +26,6 @@ import navBar from '@/components/NavBar.vue'
 import goodList from '@/components/GoodList.vue'
 import { getHome } from '@/service/home'
 import { getLocal } from '@/common/js/utils'
-import { showLoadingToast, closeToast, showToast } from 'vant'
 import { useCartStore } from '@/stores/cart'
 const cart = useCartStore()
 const router = useRouter()
@@ -45,16 +44,11 @@ onMounted(async () => {
     // 获取购物车数据.
     cart.updateCart()
   }
-  showLoadingToast({
-    message: '加载中...',
-    forbidClick: true
-  });
   const { data } = await getHome()
   state.newGoodses = data.newGoodses
   state.hots = data.hotGoodses
   state.recommends = data.recommendGoodses
   state.loading = false
-  closeToast()
 })
 
 const handleScroll = () => {

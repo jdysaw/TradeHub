@@ -1,7 +1,10 @@
 <template>
   <div class="order-detail-box">
     <s-header :name="'订单详情'" @callback="close"></s-header>
-    <div class="order-status">
+    <div class="order-status" v-if="state.loading">
+      <van-skeleton :row="3" animate />
+    </div>
+    <div class="order-status" v-else>
       <div class="status-item">
         <label>订单状态：</label>
         <span>{{ state.detail.orderStatusString }}</span>
@@ -18,7 +21,7 @@
       <van-button v-if="state.detail.orderStatus == 0" style="margin-bottom: 10px" color="#1baeae" block @click="showPayFn">去支付</van-button>
       <van-button v-if="!(state.detail.orderStatus < 0 || state.detail.orderStatus == 4)" block @click="handleCancelOrder(state.detail.orderNo)">取消订单</van-button>
     </div>
-    <div class="order-price">
+    <div class="order-price" v-if="!state.loading">
       <div class="price-item">
         <label>商品金额：</label>
         <span>¥ {{ state.detail.totalPrice }}</span>
@@ -29,6 +32,7 @@
       </div>
     </div>
     <van-card
+      v-if="!state.loading"
       v-for="item in state.detail.newBeeMallOrderItemVOS"
       :key="item.goodsId"
       style="background: #fff"
@@ -55,12 +59,13 @@
 import { reactive, toRefs, onMounted } from 'vue'
 import sHeader from '@/components/SimpleHeader.vue'
 import { getOrderDetail, cancelOrder, confirmOrder, payOrder } from '@/service/order'
-import { showConfirmDialog, showLoadingToast, closeToast, showSuccessToast, closeDialog } from 'vant'
+import { showConfirmDialog, showSuccessToast, closeDialog } from 'vant'
 import { useRoute } from 'vue-router'
 const route = useRoute()
 const state = reactive({
   detail: {},
-  showPay: false
+  showPay: false,
+  loading: false
 })
 
 onMounted(() => {
@@ -68,14 +73,11 @@ onMounted(() => {
 })
 
 const init = async () => {
-  showLoadingToast({
-    message: '加载中...',
-    forbidClick: true
-  });
+  state.loading = true
   const { id } = route.query
   const { data } = await getOrderDetail(id)
   state.detail = data
-  closeToast()
+  state.loading = false
 }
 
 const handleCancelOrder = (id) => {
