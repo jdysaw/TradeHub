@@ -1,5 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
+import { getLocal } from '@/common/js/utils'
+
+const loginRequiredRoutes = ['/user', '/cart', '/order', '/order-detail', '/create-order', '/address', '/address-edit', '/setting']
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -121,6 +124,15 @@ const router = createRouter({
       }
     },
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  const token = getLocal('token')
+  if (loginRequiredRoutes.includes(to.path) && !token) {
+    next({ path: '/login' })
+  } else {
+    next()
+  }
 })
 
 export default router

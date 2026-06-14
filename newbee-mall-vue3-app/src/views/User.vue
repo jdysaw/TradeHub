@@ -13,7 +13,11 @@
         </div>
       </div>
     </van-skeleton>
-    <ul class="user-list">
+    <div class="login-prompt" v-if="!state.loading && !state.user.loginName">
+      <p>暂未登录，请先登录</p>
+      <van-button round color="#1baeae" type="primary" @click="goTo('/login')" block>去登录</van-button>
+    </div>
+    <ul class="user-list" v-if="state.user.loginName">
       <li class="van-hairline--bottom" @click="goTo('/order')">
         <span>我的订单</span>
         <van-icon name="arrow" />
@@ -44,12 +48,15 @@ const state = reactive({
 })
 
 onMounted(async () => {
-  const { data } = await getUserInfo()
-  state.user = data
-  state.loading = false
+  try {
+    const { data } = await getUserInfo()
+    state.user = data
+  } catch (e) {
+    state.user = {}
+  } finally {
+    state.loading = false
+  }
 })
-
-
 
 const goTo = (r, query) => {
   router.push({ path: r, query: query || {} })
@@ -120,6 +127,16 @@ const goTo = (r, query) => {
             margin-right: 4px;
           }
         }
+      }
+    }
+    .login-prompt {
+      width: 50%;
+      margin: 80px auto 0;
+      text-align: center;
+      p {
+        font-size: 16px;
+        color: #999;
+        margin-bottom: 20px;
       }
     }
     .user-list {
