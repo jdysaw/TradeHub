@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ltd.newbee.mall.dao.MallFileMapper">
+    
+    <resultMap id="BaseResultMap" type="ltd.newbee.mall.entity.MallFile">
+        <id column="file_id" jdbcType="BIGINT" property="fileId"/>
+        <result column="file_name" jdbcType="VARCHAR" property="fileName"/>
+        <result column="file_suffix" jdbcType="VARCHAR" property="fileSuffix"/>
+        <result column="file_content" jdbcType="LONGVARCHAR" property="fileContent"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+    
+    <!-- 插入文件数据 -->
+    <insert id="insert" parameterType="ltd.newbee.mall.entity.MallFile" useGeneratedKeys="true" keyProperty="fileId">
+        INSERT INTO tb_newbee_mall_file
+        (file_name, file_suffix, file_content)
+        VALUES
+        (#{fileName}, #{fileSuffix}, #{fileContent})
+    </insert>
+    
+    <!-- 根据文件ID查询 -->
+    <select id="selectById" parameterType="long" resultMap="BaseResultMap">
+        SELECT file_id, file_name, file_suffix, file_content, create_time
+        FROM tb_newbee_mall_file
+        WHERE file_id = #{fileId}
+    </select>
+
+    <!-- 根据文件ID删除 -->
+    <delete id="deleteById" parameterType="long">
+        DELETE FROM tb_newbee_mall_file WHERE file_id = #{fileId}
+    </delete>
+
+    <!-- 批量删除文件 -->
+    <delete id="deleteBatch" parameterType="long">
+        DELETE FROM tb_newbee_mall_file WHERE file_id IN
+        <foreach collection="array" item="fileId" open="(" separator="," close=")">
+            #{fileId}
+        </foreach>
+    </delete>
+    
+</mapper>

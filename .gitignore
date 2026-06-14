@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+.m2/repository/
+
+# Build output
+newbee-mall-api/target/
+vue3-admin/dist/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
