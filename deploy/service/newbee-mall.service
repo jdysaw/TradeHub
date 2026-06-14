@@ -1,0 +1,17 @@
+[Unit]
+Description=NewBee Mall API Service
+After=network.target mysql.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/newbee-mall
+# 通过环境变量传入数据库密码，启动时指定生产配置
+Environment=DB_PASSWORD=请修改为你的数据库密码
+ExecStart=/usr/bin/java -jar /opt/newbee-mall/newbee-mall-api.jar --spring.profiles.active=prod
+ExecStop=/bin/kill -SIGTERM $MAINPID
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
