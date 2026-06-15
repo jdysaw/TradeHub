@@ -120,3 +120,4 @@ public class NewBeeMallShoppingCartAPI {
         return ResultGenerator.genSuccessResult(itemsForSettle);
     }
 }
+
